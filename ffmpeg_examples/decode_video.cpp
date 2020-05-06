@@ -5,6 +5,51 @@ extern "C"
 #include "libavcodec/avcodec.h"
 }
 
+static void pgm_save(unsigned char* buf, int wrap, int xsize, int ysize,
+						char* filename)
+{
+	FILE* fp = fopen(filename, "w");
+	if (fp)
+	{
+		fprintf(fp, "P5\n%d %d\n%d\n", xsize, ysize, 255);
+		for (int i = 0; i < ysize; i++)
+			fwrite(buf + i * wrap, 1, xsize, fp);
+		fclose(fp);
+	}
+}
+
+static void decode(AVCodecContext* dec_ctx, AVFrame* frame, AVPacket* pkt,
+					const char* filename)
+{
+	// 将一帧数据发送到解码器
+	int ret = avcodec_send_packet(dec_ctx, pkt);
+	if (ret < 0)
+	{
+		printf("error sending a packet for decoding\n");
+		return;
+	}
+
+	while (ret >= 0)
+	{
+		// 从解码器中获取一帧解码后的图像
+		ret = avcodec_receive_frame(dec_ctx, frame);
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			return;
+		else if (ret < 0)
+		{
+			printf("error during ecoding\n");
+			return;
+		}
+
+		printf("saving frame %3d\n", dec_ctx->frame_number);
+		fflush(stdout);
+
+		char buf[1024] = { 0 };
+		snprintf(buf, sizeof(buf), "%s-%d", filename, dec_ctx->frame_number);
+		pgm_save(frame->data[0], frame->linesize[0], frame->width, frame->height, buf);
+	}
+}
+
 int decode_video(const char* file_name)
 {
 	// 解码前的一帧数据
@@ -48,6 +93,7 @@ int decode_video(const char* file_name)
 		return -1;
 	}
 
+	// 解析器，用来解析一帧数据的开头和结尾
 	AVCodecParserContext* codec_parser_ctx = av_parser_init(codec->id);
 	if (!codec_parser_ctx)
 	{
@@ -61,6 +107,38 @@ int decode_video(const char* file_name)
 		printf("open %s failed\n", file_name);
 		return -1;
 	}
+
+	uint8_t inbuf[4096 + 64] = { 0 };
+	size_t	data_size = 0;
+	while (!feof(fp))
+	{
+		data_size = fread(inbuf, 1, 4096, fp);
+		if (!data_size)
+			break;
+
+		uint8_t* data = inbuf;
+		while (data_size > 0)
+		{
+			// 解析数据，将data数据写入packet
+			// 如果到了一帧结尾，pkt->size会赋值为该帧的大小，否则pkt->size为0
+			int ret = av_parser_parse2(codec_parser_ctx, codec_ctx, &pkt->data, &pkt->size,
+										data, data_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
+			if (ret < 0)
+			{
+				printf("error while parsing\n");
+				return -1;
+			}
+			data += ret;
+			data_size -= ret;
+
+			if (pkt->size)
+			{
+				decode(codec_ctx, frame, pkt, file_name);
+			}
+		}
+	}
+
+	decode(codec_ctx, frame, NULL, file_name);
 
 	return 0;
 }
