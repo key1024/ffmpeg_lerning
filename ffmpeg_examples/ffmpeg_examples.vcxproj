@@ -144,7 +144,11 @@
     <ClCompile Include="avio_list_dir.cpp" />
     <ClCompile Include="avio_reading.cpp" />
     <ClCompile Include="decode_video.cpp" />
+    <ClCompile Include="DemuxingDecoding.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DemuxingDecoding.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

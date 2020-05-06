@@ -1,4 +1,5 @@
 #include <iostream>
+#include "DemuxingDecoding.h"
 
 // 查看文件夹内容
 // windows下不支持此方法
@@ -10,7 +11,10 @@ int main(void)
 {
 	// avio_list_dir(".");
 	// avio_reading("bigbuckbunny_480x272.h265");
-	decode_video("bigbuckbunny_480x272.h265");
+	// decode_video("bigbuckbunny_480x272.h265");
+
+	DemuxingDecoding dd;
+	dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
 
 	return 0;
 }
