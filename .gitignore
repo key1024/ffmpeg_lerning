@@ -1,2 +1,3 @@
 .vs/
 *.log
+ffmpeg_*/x64
