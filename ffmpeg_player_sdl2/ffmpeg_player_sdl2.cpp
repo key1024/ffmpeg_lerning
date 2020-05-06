@@ -30,6 +30,13 @@ int sfp_refresh_thread(void* opaque)
 	return 0;
 }
 
+int open_input_file(const char* fileName)
+{
+
+
+	return 0;
+}
+
 int main(int argc, char** argv)
 {
 	av_register_all();
