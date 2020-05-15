@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 	AVFormatContext* pFormatCtx = avformat_alloc_context();
 
 	//char filePath[] = "a.h264";
-	char filePath[] = "bigbuckbunny_480x272.h265";
+	char filePath[] = "aaaa.h264";
 	if (avformat_open_input(&pFormatCtx, filePath, NULL, NULL) != 0)
 	{
 		printf("Couldn't open input stream.\n");
