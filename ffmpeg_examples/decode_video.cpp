@@ -138,6 +138,7 @@ int decode_video(const char* file_name)
 		}
 	}
 
+	// 解码器中残留的数据
 	decode(codec_ctx, frame, NULL, file_name);
 
 	return 0;

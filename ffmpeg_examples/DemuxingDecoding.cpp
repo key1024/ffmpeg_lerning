@@ -1,5 +1,6 @@
 #include "DemuxingDecoding.h"
 #include <iostream>
+#include <stdio.h>
 
 extern "C"
 {
@@ -128,14 +129,25 @@ int DemuxingDecoding::decodeVideoPacket(const AVPacket* packet)
 		return -1;
 	}
 
-	int video_frame_count = 0;
+	static int video_frame_count = 1;
 	if (got_frame)
 	{
 		std::cout << "video_frame n:" << video_frame_count++ 
-			<< " coded_n:" << frame->coded_picture_number << std::endl;
+				  << " pic_format:" << frame->format 
+				  << " linesize: " << video_dst_linesize[0] << " " << video_dst_linesize[1] << " " << video_dst_linesize[2] << " " << video_dst_linesize[3]
+				  << std::endl;
 
 		av_image_copy(video_dst_data, video_dst_linesize, (const uint8_t**)frame->data, 
 			frame->linesize, (AVPixelFormat)frame->format, frame->width, frame->height);
+
+		FILE* fp = fopen("a.yuv", "ab+");
+		if(fp)
+		{
+			fwrite(video_dst_data[0], 1, frame->width * frame->height, fp);
+			fwrite(video_dst_data[1], 1, frame->width * frame->height/4, fp);
+			fwrite(video_dst_data[2], 1, frame->width * frame->height/4, fp);
+			fclose(fp);
+		}
 	}
 
 	return 0;

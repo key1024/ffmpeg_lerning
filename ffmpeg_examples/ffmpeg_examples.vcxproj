@@ -145,6 +145,7 @@
     <ClCompile Include="avio_reading.cpp" />
     <ClCompile Include="decode_video.cpp" />
     <ClCompile Include="DemuxingDecoding.cpp" />
+    <ClCompile Include="encoding_video.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
