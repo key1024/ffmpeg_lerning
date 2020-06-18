@@ -6,6 +6,7 @@
 extern int avio_list_dir(const char* dir_name);
 extern int avio_reading(const char* file_name);
 extern int decode_video(const char* file_name);
+extern int encoding_video();
 
 int main(void)
 {
@@ -13,8 +14,9 @@ int main(void)
 	// avio_reading("bigbuckbunny_480x272.h265");
 	// decode_video("bigbuckbunny_480x272.h265");
 
-	DemuxingDecoding dd;
-	dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
+	//DemuxingDecoding dd;
+	//dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
+	encoding_video();
 
 	return 0;
 }

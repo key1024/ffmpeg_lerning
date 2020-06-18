@@ -7,11 +7,10 @@ extern "C"
 
 int encoding_video()
 {
-	char codec_name[8] = "avi";
-	AVCodec* codec = avcodec_find_encoder_by_name("avi");
+	AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H265);
 	if (!codec)
 	{
-		printf("≤È’“%s∂‘”¶µƒ±‡¬Î∆˜ ß∞‹\n", codec_name);
+		printf("≤È’“±‡¬Î∆˜ ß∞‹\n");
 		return -1;
 	}
 
@@ -71,7 +70,65 @@ int encoding_video()
 		return -1;
 	}
 
+	FILE* f = fopen("test.h265", "wb");
+	if (!f) {
+		fprintf(stderr, "Could not open %s\n", "test.avi");
+		exit(1);
+	}
 
+	for (int i = 0; i < 250; i++)
+	{
+		ret = av_frame_make_writable(frame);
+		if (ret < 0)
+			break;
+
+		for (int y = 0; y < ctx->height; y++) {
+			for (int x = 0; x < ctx->width; x++) {
+				frame->data[0][y * frame->linesize[0] + x] = x + y + i * 3;
+			}
+		}
+
+		/* Cb and Cr */
+		for (int y = 0; y < ctx->height / 2; y++) {
+			for (int x = 0; x < ctx->width / 2; x++) {
+				frame->data[1][y * frame->linesize[1] + x] = 128 + y + i * 2;
+				frame->data[2][y * frame->linesize[2] + x] = 64 + x + i * 5;
+			}
+		}
+
+		frame->pts = i;
+
+		ret = avcodec_send_frame(ctx, frame);
+		if (ret < 0) {
+			fprintf(stderr, "Error sending a frame for encoding\n");
+			exit(1);
+		}
+
+		while (ret >= 0)
+		{
+			ret = avcodec_receive_packet(ctx, pkt);
+			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+				break;
+			else if(ret < 0)
+			{
+				fprintf(stderr, "Error during encoding\n");
+				exit(1);
+			}
+
+			printf("Write packet %3(size=%5d)\n", pkt->pts, pkt->size);
+			fwrite(pkt->data, 1, pkt->size, f);
+			av_packet_unref(pkt);
+		}
+	}
+
+	uint8_t endcode[] = { 0, 0, 1, 0xb7 };
+	if (codec->id == AV_CODEC_ID_MPEG1VIDEO || codec->id == AV_CODEC_ID_MPEG2VIDEO)
+		fwrite(endcode, 1, sizeof(endcode), f);
+
+	fclose(f);
+	avcodec_free_context(&ctx);
+	av_frame_free(&frame);
+	av_packet_free(&pkt);
 
 	return 0;
 }
