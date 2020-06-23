@@ -33,6 +33,7 @@ int DemuxingDecoding::DemuxingAndDecoding(const char* file_name)
 		return -1;
 	}
 
+	// 创建视频解码上下文
 	ret = openCodecContext(AVMEDIA_TYPE_VIDEO);
 	if (ret < 0)
 		return -1;
@@ -126,6 +127,7 @@ int DemuxingDecoding::decodeVideoPacket(const AVPacket* packet)
 	{
 		std::cout << "error decoding video frame: "
 			<< av_make_error_string(err_buffer, AV_ERROR_MAX_STRING_SIZE, ret) << std::endl;
+		av_frame_free(&frame);
 		return -1;
 	}
 
@@ -149,6 +151,8 @@ int DemuxingDecoding::decodeVideoPacket(const AVPacket* packet)
 			fclose(fp);
 		}
 	}
+
+	av_frame_free(&frame);
 
 	return 0;
 }
