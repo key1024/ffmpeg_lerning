@@ -1,3 +1,7 @@
+/*
+	读取文件中数据，进行解码。
+*/
+
 #include "DemuxingDecoding.h"
 #include <iostream>
 #include <stdio.h>
@@ -107,8 +111,6 @@ int DemuxingDecoding::openCodecContext(AVMediaType type)
 
 int DemuxingDecoding::decodePacket()
 {
-
-
 	return 0;
 }
 
@@ -139,6 +141,9 @@ int DemuxingDecoding::decodeVideoPacket(const AVPacket* packet)
 				  << " linesize: " << video_dst_linesize[0] << " " << video_dst_linesize[1] << " " << video_dst_linesize[2] << " " << video_dst_linesize[3]
 				  << std::endl;
 
+		std::cout << " linesize: " << frame->linesize[0] << " " << frame->linesize[1] << " " << frame->linesize[2] << std::endl;
+
+		// 拷贝成连续的数据，步长与宽度保持一致
 		av_image_copy(video_dst_data, video_dst_linesize, (const uint8_t**)frame->data, 
 			frame->linesize, (AVPixelFormat)frame->format, frame->width, frame->height);
 

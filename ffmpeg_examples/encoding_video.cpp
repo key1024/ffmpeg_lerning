@@ -1,3 +1,6 @@
+/*
+	纯净的编码器，只包含编码流程
+*/
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -7,7 +10,7 @@ extern "C"
 
 int encoding_video()
 {
-	AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H265);
+	AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
 	if (!codec)
 	{
 		printf("查找编码器失败\n");
@@ -70,7 +73,7 @@ int encoding_video()
 		return -1;
 	}
 
-	FILE* f = fopen("test.h265", "wb");
+	FILE* f = fopen("test.h264", "wb");
 	if (!f) {
 		fprintf(stderr, "Could not open %s\n", "test.avi");
 		exit(1);

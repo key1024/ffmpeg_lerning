@@ -11,12 +11,12 @@ extern int encoding_video();
 int main(void)
 {
 	// avio_list_dir(".");
-	// avio_reading("bigbuckbunny_480x272.h265");
+	 //avio_reading("bigbuckbunny_480x272.h265");
 	// decode_video("bigbuckbunny_480x272.h265");
 
 	DemuxingDecoding dd;
-	dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
-	//encoding_video();
+	//dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
+	encoding_video();
 
 	return 0;
 }

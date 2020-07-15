@@ -1,3 +1,7 @@
+/*
+	只创建了解码器，并通过AVCodecParserContext将数据流分割成一帧帧的数据，传入解码器进行解码。
+	如果获取到的数据是一帧帧分开的，则可以不使用AVCodecParserContext，将帧数据直接送到解码器。
+*/
 #include <stdio.h>
 
 extern "C"
