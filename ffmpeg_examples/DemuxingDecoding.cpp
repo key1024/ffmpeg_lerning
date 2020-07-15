@@ -1,5 +1,5 @@
 /*
-	读取文件中数据，进行解码。
+	读取封装好的视频文件，进行解封装和解码
 */
 
 #include "DemuxingDecoding.h"

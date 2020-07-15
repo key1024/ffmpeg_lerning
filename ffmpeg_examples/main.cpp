@@ -15,8 +15,8 @@ int main(void)
 	// decode_video("bigbuckbunny_480x272.h265");
 
 	DemuxingDecoding dd;
-	//dd.DemuxingAndDecoding("bigbuckbunny_480x272.h265");
-	encoding_video();
+	dd.DemuxingAndDecoding("test.mp4");
+	//encoding_video();
 
 	return 0;
 }
