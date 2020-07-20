@@ -146,10 +146,12 @@
     <ClCompile Include="decode_video.cpp" />
     <ClCompile Include="DemuxingDecoding.cpp" />
     <ClCompile Include="encoding_video.cpp" />
+    <ClCompile Include="FilteringVideo.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemuxingDecoding.h" />
+    <ClInclude Include="FilteringVideo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

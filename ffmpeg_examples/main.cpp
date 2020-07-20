@@ -1,5 +1,6 @@
 #include <iostream>
 #include "DemuxingDecoding.h"
+#include "FilteringVideo.h"
 
 // 查看文件夹内容
 // windows下不支持此方法
@@ -14,9 +15,12 @@ int main(void)
 	 //avio_reading("bigbuckbunny_480x272.h265");
 	// decode_video("bigbuckbunny_480x272.h265");
 
-	DemuxingDecoding dd;
-	dd.DemuxingAndDecoding("test.mp4");
+	//DemuxingDecoding dd;
+	//dd.DemuxingAndDecoding("test.mp4");
 	//encoding_video();
+
+	Filtering filtering;
+	filtering.Run("test.mp4");
 
 	return 0;
 }
