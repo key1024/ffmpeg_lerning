@@ -147,7 +147,9 @@
     <ClCompile Include="DemuxingDecoding.cpp" />
     <ClCompile Include="encoding_video.cpp" />
     <ClCompile Include="FilteringVideo.cpp" />
+    <ClCompile Include="hw_decode.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="muxing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemuxingDecoding.h" />

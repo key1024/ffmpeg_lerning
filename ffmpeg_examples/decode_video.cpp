@@ -3,6 +3,7 @@
 	如果获取到的数据是一帧帧分开的，则可以不使用AVCodecParserContext，将帧数据直接送到解码器。
 */
 #include <stdio.h>
+#include <time.h>
 
 extern "C"
 {
@@ -50,7 +51,7 @@ static void decode(AVCodecContext* dec_ctx, AVFrame* frame, AVPacket* pkt,
 
 		char buf[1024] = { 0 };
 		snprintf(buf, sizeof(buf), "%s-%d", filename, dec_ctx->frame_number);
-		pgm_save(frame->data[0], frame->linesize[0], frame->width, frame->height, buf);
+		//pgm_save(frame->data[0], frame->linesize[0], frame->width, frame->height, buf);
 	}
 }
 
@@ -74,10 +75,10 @@ int decode_video(const char* file_name)
 	// 先查找解码器
 	// 由于我已经知道要解码的视频是h265格式的，所以直接指定了AV_CODEC_ID_H265这个解码器
 	// 如果不清楚使用的是什么解码器的话，可以使用avformat_find_stream_info这个函数来获取视频信息
-	AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_H265);
+	AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_H264);
 	if (!codec)
 	{
-		printf("codec not found: %d\n", AV_CODEC_ID_H265);
+		printf("codec not found: %d\n", AV_CODEC_ID_H264);
 		return -1;
 	}
 
@@ -137,7 +138,10 @@ int decode_video(const char* file_name)
 
 			if (pkt->size)
 			{
+				clock_t t1 = clock();
 				decode(codec_ctx, frame, pkt, file_name);
+				clock_t t2 = clock();
+				printf("耗时: %ld\n", t2 - t1);
 			}
 		}
 	}

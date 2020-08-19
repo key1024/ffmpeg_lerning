@@ -36,6 +36,12 @@
     <ClCompile Include="FilteringVideo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="hw_decode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="muxing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemuxingDecoding.h">
