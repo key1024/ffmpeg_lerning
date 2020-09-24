@@ -26,16 +26,50 @@ int sfp_refresh_thread(void* opaque)
 	return 0;
 }
 
+void show_device()
+{
+	AVFormatContext* pFormatCtx = avformat_alloc_context();
+	AVDictionary* options = NULL;
+	av_dict_set(&options, "list_devices", "true", 0);
+	AVInputFormat* iformat = av_find_input_format("dshow");
+	printf("========Device Info=============\n");
+	avformat_open_input(&pFormatCtx, "video=dummy", iformat, &options);
+	printf("================================\n");
+	avformat_close_input(&pFormatCtx);
+	avformat_free_context(pFormatCtx);
+}
+
+void show_device_option()
+{
+	AVFormatContext* pFormatCtx = avformat_alloc_context();
+	AVDictionary* options = NULL;
+	av_dict_set(&options, "list_options", "true", 0);
+	AVInputFormat* iformat = av_find_input_format("dshow");
+	printf("========Device Option Info======\n");
+	avformat_open_input(&pFormatCtx, "video=SIT USB2.0 Camera", iformat, &options);
+	printf("================================\n");
+	avformat_close_input(&pFormatCtx);
+	avformat_free_context(pFormatCtx);
+}
+
 int main(int argc, char** argv)
 {
 	avdevice_register_all();
 	av_register_all();
+
+	//show_device();
+	//show_device_option();
+
+	//return 0;
 	
 	AVInputFormat* fmt = av_find_input_format("dshow");
 	printf("format: %s\n", fmt->name);
 
 	AVFormatContext* fmt_ctx = avformat_alloc_context();
-	if (avformat_open_input(&fmt_ctx, "video=SIT USB2.0 Camera", fmt, nullptr) != 0)
+	AVDictionary* option = nullptr;
+	av_dict_set(&option, "video_size", "1920x1080", 0);
+	av_dict_set(&option, "framerate", "30", 0);
+	if (avformat_open_input(&fmt_ctx, "video=SIT USB2.0 Camera", fmt, &option) != 0)
 	{
 		printf("open input stream failed\n");
 		return -1;
@@ -77,6 +111,9 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+
+	int width = codec_ctx->width;
+	int height = codec_ctx->height;
 	SwsContext* sws_ctx = sws_getContext(codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
 		codec_ctx->width, codec_ctx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, nullptr, nullptr, nullptr);
 
@@ -84,18 +121,18 @@ int main(int argc, char** argv)
 	AVFrame* frame = av_frame_alloc();
 
 	AVFrame* yuv_frame = av_frame_alloc();
-	yuv_frame->data[0] = (uint8_t*)malloc(1920 * 1080);
-	yuv_frame->data[1] = (uint8_t*)malloc(1920 * 1080 / 2);
-	yuv_frame->data[2] = (uint8_t*)malloc(1920 * 1080 / 2);
-	yuv_frame->linesize[0] = 1920;
-	yuv_frame->linesize[1] = 1920 / 2;
-	yuv_frame->linesize[2] = 1920 / 2;
+	yuv_frame->data[0] = (uint8_t*)malloc(width * height);
+	yuv_frame->data[1] = (uint8_t*)malloc(width * height / 2);
+	yuv_frame->data[2] = (uint8_t*)malloc(width * height / 2);
+	yuv_frame->linesize[0] = width;
+	yuv_frame->linesize[1] = width / 2;
+	yuv_frame->linesize[2] = width / 2;
 	yuv_frame->height = codec_ctx->height;
 	yuv_frame->width = codec_ctx->width;
 
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
-	int w_width = 960;
-	int w_height = 540;
+	int w_width = width;
+	int w_height = height;
 	SDL_Window* window = SDL_CreateWindow("play camera", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w_width, w_height, SDL_WINDOW_OPENGL);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, codec_ctx->width, codec_ctx->height);
