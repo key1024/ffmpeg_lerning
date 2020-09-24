@@ -15,6 +15,7 @@ void configurationInfo()
     printf("%s\n", avcodec_configuration());
 }
 
+
 void urlProtocolInfo()
 {
     av_register_all();
