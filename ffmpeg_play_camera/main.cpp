@@ -20,7 +20,7 @@ int sfp_refresh_thread(void* opaque)
 	{
 		event.type = SFM_REFRESH_EVENT;
 		SDL_PushEvent(&event);
-		SDL_Delay(60);
+		SDL_Delay(33);
 	}
 
 	return 0;
@@ -31,11 +31,11 @@ int main(int argc, char** argv)
 	avdevice_register_all();
 	av_register_all();
 	
-	AVInputFormat* fmt = av_find_input_format("vfwcap");
+	AVInputFormat* fmt = av_find_input_format("dshow");
 	printf("format: %s\n", fmt->name);
 
 	AVFormatContext* fmt_ctx = avformat_alloc_context();
-	if (avformat_open_input(&fmt_ctx, "0", fmt, nullptr) != 0)
+	if (avformat_open_input(&fmt_ctx, "video=SIT USB2.0 Camera", fmt, nullptr) != 0)
 	{
 		printf("open input stream failed\n");
 		return -1;
